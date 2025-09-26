@@ -1,0 +1,209 @@
+diff --git a//dev/null b/styles.css
+index 0000000000000000000000000000000000000000..60a741030e22c9de9a7f526f0b14061e07eabb76 100644
+--- a//dev/null
++++ b/styles.css
+@@ -0,0 +1,204 @@
++:root {
++  --bg-color: #04122d;
++  --card-bg: rgba(10, 26, 59, 0.85);
++  --accent: #4fc3f7;
++  --accent-strong: #7dd3fc;
++  --text-color: #f1f5f9;
++  --subtext-color: #cbd5f5;
++  --border-radius: 18px;
++  --transition: 200ms ease;
++  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
++}
++
++* {
++  box-sizing: border-box;
++}
++
++body {
++  margin: 0;
++  min-height: 100vh;
++  background: radial-gradient(circle at 10% 10%, rgba(79, 195, 247, 0.35), transparent 45%),
++    radial-gradient(circle at 90% 20%, rgba(125, 211, 252, 0.3), transparent 45%),
++    linear-gradient(135deg, #020916 0%, #071d3f 45%, #04122d 100%);
++  color: var(--text-color);
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  gap: 2.5rem;
++  padding: 3rem 1.5rem 4rem;
++}
++
++body::before {
++  content: "";
++  position: fixed;
++  inset: 0;
++  background: radial-gradient(circle at 20% 20%, rgba(66, 153, 225, 0.15), transparent 55%),
++    radial-gradient(circle at 80% 80%, rgba(79, 195, 247, 0.12), transparent 60%);
++  z-index: -1;
++}
++
++header {
++  text-align: center;
++  max-width: 640px;
++}
++
++header h1 {
++  font-size: clamp(2.25rem, 5vw, 3.25rem);
++  margin-bottom: 0.5rem;
++  letter-spacing: 0.04em;
++}
++
++header p {
++  color: var(--subtext-color);
++  font-size: 1.05rem;
++  line-height: 1.6;
++  margin: 0;
++}
++
++main {
++  width: min(1100px, 100%);
++  display: grid;
++  gap: 1.75rem;
++}
++
++.grid {
++  display: grid;
++  gap: 1.25rem;
++}
++
++@media (min-width: 960px) {
++  .grid {
++    grid-template-columns: repeat(3, minmax(0, 1fr));
++  }
++}
++
++.card {
++  position: relative;
++  background: var(--card-bg);
++  border: 1px solid rgba(79, 195, 247, 0.35);
++  border-radius: var(--border-radius);
++  padding: 1.75rem;
++  display: flex;
++  flex-direction: column;
++  gap: 1.25rem;
++  box-shadow: 0 16px 36px rgba(4, 18, 45, 0.65);
++  backdrop-filter: blur(10px);
++  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
++}
++
++.card::after {
++  content: "";
++  position: absolute;
++  inset: 1px;
++  border-radius: calc(var(--border-radius) - 1px);
++  border: 1px solid rgba(125, 211, 252, 0.08);
++  pointer-events: none;
++}
++
++.card:hover {
++  transform: translateY(-6px);
++  border-color: rgba(79, 195, 247, 0.55);
++  box-shadow: 0 24px 48px rgba(4, 18, 45, 0.9);
++}
++
++.card h2 {
++  margin: 0;
++  font-size: 1.4rem;
++  letter-spacing: 0.02em;
++}
++
++.card p {
++  margin: 0;
++  color: var(--subtext-color);
++  font-size: 0.95rem;
++  line-height: 1.6;
++}
++
++label {
++  font-weight: 600;
++  letter-spacing: 0.01em;
++}
++
++select,
++textarea {
++  background: rgba(3, 12, 32, 0.9);
++  color: var(--text-color);
++  border: 1px solid rgba(79, 195, 247, 0.4);
++  border-radius: 12px;
++  padding: 0.75rem 1rem;
++  font-size: 1rem;
++  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
++}
++
++select:focus,
++textarea:focus {
++  outline: none;
++  border-color: var(--accent);
++  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.25);
++}
++
++select:hover,
++textarea:hover {
++  border-color: rgba(125, 211, 252, 0.55);
++  transform: translateY(-2px);
++}
++
++select option {
++  background: #020916;
++}
++
++textarea {
++  min-height: 120px;
++  resize: vertical;
++}
++
++.tag-list {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 0.5rem;
++}
++
++.tag {
++  padding: 0.4rem 0.85rem;
++  border-radius: 9999px;
++  border: 1px solid rgba(79, 195, 247, 0.5);
++  background: rgba(9, 24, 53, 0.8);
++  font-size: 0.85rem;
++  letter-spacing: 0.02em;
++  transition: background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
++}
++
++.tag.active {
++  border-color: rgba(125, 211, 252, 0.8);
++  background: rgba(79, 195, 247, 0.25);
++  color: var(--accent-strong);
++  box-shadow: 0 0 12px rgba(79, 195, 247, 0.45);
++}
++
++.selection-display {
++  background: rgba(6, 20, 46, 0.8);
++  border-radius: 14px;
++  padding: 0.9rem 1rem;
++  border: 1px solid rgba(79, 195, 247, 0.2);
++  font-size: 0.9rem;
++  line-height: 1.5;
++}
++
++.selection-display strong {
++  color: var(--accent-strong);
++}
++
++footer {
++  text-align: center;
++  color: rgba(203, 213, 255, 0.65);
++  font-size: 0.85rem;
++}
++
++footer a {
++  color: var(--accent-strong);
++  text-decoration: none;
++}
++
++footer a:hover {
++  text-decoration: underline;
++}
