@@ -4,154 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HSR Build Planner</title>
-    <style>
-      :root {
-        --bg-color: #04122d;
-        --card-bg: rgba(10, 26, 59, 0.85);
-        --accent: #4fc3f7;
-        --text-color: #f1f5f9;
-        --subtext-color: #cbd5f5;
-        --border-radius: 18px;
-        --transition: 200ms ease;
-        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #020916 0%, #071d3f 45%, #04122d 100%);
-        color: var(--text-color);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2.5rem;
-        padding: 3rem 1.5rem 4rem;
-      }
-
-      header {
-        text-align: center;
-        max-width: 640px;
-      }
-
-      header h1 {
-        font-size: clamp(2.25rem, 5vw, 3.25rem);
-        margin-bottom: 0.5rem;
-        letter-spacing: 0.04em;
-      }
-
-      header p {
-        color: var(--subtext-color);
-        font-size: 1.05rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-
-      main {
-        width: min(1100px, 100%);
-        display: grid;
-        gap: 1.75rem;
-      }
-
-      .grid {
-        display: grid;
-        gap: 1.25rem;
-      }
-
-      @media (min-width: 960px) {
-        .grid {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-      }
-
-      .card {
-        background: var(--card-bg);
-        border: 1px solid rgba(79, 195, 247, 0.35);
-        border-radius: var(--border-radius);
-        padding: 1.75rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-        box-shadow: 0 16px 36px rgba(4, 18, 45, 0.65);
-        backdrop-filter: blur(8px);
-        transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-      }
-
-      .card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(79, 195, 247, 0.55);
-        box-shadow: 0 24px 48px rgba(4, 18, 45, 0.9);
-      }
-
-      .card h2 {
-        margin: 0;
-        font-size: 1.4rem;
-        letter-spacing: 0.02em;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--subtext-color);
-        font-size: 0.95rem;
-        line-height: 1.6;
-      }
-
-      label {
-        font-weight: 600;
-        letter-spacing: 0.01em;
-      }
-
-      select,
-      textarea {
-        background: rgba(3, 12, 32, 0.9);
-        color: var(--text-color);
-        border: 1px solid rgba(79, 195, 247, 0.4);
-        border-radius: 12px;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-        transition: border-color var(--transition), box-shadow var(--transition);
-      }
-
-      select:focus,
-      textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.25);
-      }
-
-      select option {
-        background: #020916;
-      }
-
-      textarea {
-        min-height: 110px;
-        resize: vertical;
-      }
-
-      .tag-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .tag {
-        padding: 0.4rem 0.85rem;
-        border-radius: 9999px;
-        border: 1px solid rgba(79, 195, 247, 0.5);
-        background: rgba(9, 24, 53, 0.8);
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
-      }
-
-      footer {
-        text-align: center;
-        color: rgba(203, 213, 255, 0.65);
-        font-size: 0.85rem;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="scripts.js"></script>
   </head>
   <body>
     <header>
@@ -186,7 +40,10 @@
             <span class="tag">Erudition</span>
             <span class="tag">Harmony</span>
             <span class="tag">Destruction</span>
+            <span class="tag">Preservation</span>
+            <span class="tag">Nihility</span>
           </div>
+          <div id="character-description" class="selection-display"></div>
         </article>
 
         <article class="card">
@@ -205,6 +62,7 @@
             <option>The Ashblazing Grand Duke</option>
             <option>Musketeer of Wild Wheat</option>
           </select>
+          <div id="relic-description" class="selection-display"></div>
           <label for="planar">Planar Ornament</label>
           <select id="planar" name="planar">
             <option value="" disabled selected>Select a planar ornament</option>
@@ -214,6 +72,7 @@
             <option>Inert Salsotto</option>
             <option>Sprightly Vonwacq</option>
           </select>
+          <div id="planar-description" class="selection-display"></div>
         </article>
 
         <article class="card">
@@ -233,15 +92,20 @@
             <option>On the Fall of an Aeon</option>
             <option>Texture of Memories</option>
           </select>
+          <div id="lightcone-description" class="selection-display"></div>
           <label for="notes">Build Notes</label>
-          <textarea id="notes" name="notes" placeholder="Add main stats, sub-stat priorities, or team ideas..."></textarea>
+          <textarea
+            id="notes"
+            name="notes"
+            placeholder="Add main stats, sub-stat priorities, or team ideas..."
+          ></textarea>
         </article>
       </section>
     </main>
 
     <footer>
       Craft your perfect team rotation by pairing the right relics and light
-      cones with each HSR character.
+      cones with each HSR character. Created for Trailblazers everywhere.
     </footer>
   </body>
 </html>
