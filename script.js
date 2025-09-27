@@ -102,6 +102,7 @@ function attachListeners() {
   const relicSelect = document.getElementById("relic-set");
   const planarSelect = document.getElementById("planar");
   const lightConeSelect = document.getElementById("light-cone");
+  const generateButton = document.getElementById("generate-button");
 
   if (characterSelect) {
     characterSelect.addEventListener("change", (event) => updateCharacterDetails(event.target.value));
@@ -115,8 +116,203 @@ function attachListeners() {
   if (lightConeSelect) {
     lightConeSelect.addEventListener("change", (event) => updateLightConeDetails(event.target.value));
   }
+  if (generateButton) {
+    generateButton.addEventListener("click", () => {
+      const character = characterSelect?.value;
+      const relic = relicSelect?.value;
+      const planar = planarSelect?.value;
+      const lightCone = lightConeSelect?.value;
+      const notes = document.getElementById("notes")?.value.trim();
+
+      displaySummary({ character, relic, planar, lightCone, notes });
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   attachListeners();
 });
+
+const buildRecommendations = {
+  "Dan Heng • Imbibitor Lunae": {
+    bestRelics: ["Eagle of Twilight Line", "The Ashblazing Grand Duke"],
+    bestPlanars: ["Rutilant Arena", "Space Sealing Station"],
+    bestLightCones: ["In the Night", "On the Fall of an Aeon"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7a/Character_Dan_Heng_Imbibitor_Lunae_Splash_Art.png",
+      alt: "Dan Heng • Imbibitor Lunae readying a strike",
+    },
+  },
+  Kafka: {
+    bestRelics: ["The Ashblazing Grand Duke", "Musketeer of Wild Wheat"],
+    bestPlanars: ["Space Sealing Station", "Broken Keel"],
+    bestLightCones: ["Patience Is All You Need"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/2/25/Character_Kafka_Splash_Art.png",
+      alt: "Kafka surrounded by crackling purple lightning",
+    },
+  },
+  Seele: {
+    bestRelics: ["Genius of Brilliant Stars", "Musketeer of Wild Wheat"],
+    bestPlanars: ["Rutilant Arena", "Inert Salsotto"],
+    bestLightCones: ["In the Night"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/8/89/Character_Seele_Splash_Art.png",
+      alt: "Seele striking with her scythe amid blue particles",
+    },
+  },
+  Bronya: {
+    bestRelics: ["Eagle of Twilight Line", "Musketeer of Wild Wheat"],
+    bestPlanars: ["Sprightly Vonwacq", "Broken Keel"],
+    bestLightCones: ["Moment of Victory"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ad/Character_Bronya_Splash_Art.png",
+      alt: "Bronya raising her lance with flowing cape",
+    },
+  },
+  Jingliu: {
+    bestRelics: ["Genius of Brilliant Stars", "The Ashblazing Grand Duke"],
+    bestPlanars: ["Rutilant Arena", "Inert Salsotto"],
+    bestLightCones: ["Before Dawn"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3f/Character_Jingliu_Splash_Art.png",
+      alt: "Jingliu poised with her icy blade",
+    },
+  },
+  Clara: {
+    bestRelics: ["Longevous Disciple", "Musketeer of Wild Wheat"],
+    bestPlanars: ["Belobog of the Architects", "Inert Salsotto"],
+    bestLightCones: ["Moment of Victory", "Texture of Memories"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Clara_Splash_Art.png",
+      alt: "Clara standing beside Svarog",
+    },
+  },
+  "Ruan Mei": {
+    bestRelics: ["Musketeer of Wild Wheat", "Longevous Disciple"],
+    bestPlanars: ["Sprightly Vonwacq", "Broken Keel"],
+    bestLightCones: ["Before Dawn"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8f/Character_Ruan_Mei_Splash_Art.png",
+      alt: "Ruan Mei smiling with holographic butterflies",
+    },
+  },
+  "Trailblazer (Fire)": {
+    bestRelics: ["Longevous Disciple", "Musketeer of Wild Wheat"],
+    bestPlanars: ["Belobog of the Architects", "Broken Keel"],
+    bestLightCones: ["Moment of Victory", "Texture of Memories"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/8/86/Character_Trailblazer_%28Fire%29_Splash_Art.png",
+      alt: "Fire Trailblazer shielding with blazing sword",
+    },
+  },
+  "Trailblazer (Imaginary)": {
+    bestRelics: ["Musketeer of Wild Wheat", "Eagle of Twilight Line"],
+    bestPlanars: ["Sprightly Vonwacq", "Broken Keel"],
+    bestLightCones: ["On the Fall of an Aeon", "Before Dawn"],
+    image: {
+      src: "https://static.wikia.nocookie.net/houkai-star-rail/images/8/82/Character_Trailblazer_%28Imaginary%29_Splash_Art.png",
+      alt: "Imaginary Trailblazer channeling golden energy",
+    },
+  },
+};
+
+const fallbackImage = {
+  src: "https://static.wikia.nocookie.net/houkai-star-rail/images/2/21/Icon_Character_Default.png",
+  alt: "Placeholder silhouette of a character",
+};
+
+function displaySummary({ character, relic, planar, lightCone, notes }) {
+  const summarySection = document.getElementById("build-summary");
+  const summaryText = document.getElementById("summary-text");
+  const optimalityText = document.getElementById("optimality-text");
+  const summaryImage = document.getElementById("summary-image");
+  const summaryCaption = document.getElementById("summary-caption");
+
+  if (!summarySection || !summaryText || !optimalityText || !summaryImage || !summaryCaption) {
+    return;
+  }
+
+  const hasAllSelections = character && relic && planar && lightCone;
+
+  if (!hasAllSelections) {
+    summarySection.hidden = false;
+    summaryText.textContent = "Please complete every selection to generate a full build summary.";
+    optimalityText.textContent = "";
+    summaryImage.src = fallbackImage.src;
+    summaryImage.alt = fallbackImage.alt;
+    summaryCaption.textContent = "Awaiting your complete build selections.";
+    return;
+  }
+
+  const recommendation = buildRecommendations[character] ?? {};
+  const evaluation = evaluateBuild({ recommendation, relic, planar, lightCone });
+
+  const description = characterData[character]?.description ?? "";
+  const summaryParts = [
+    `${character} build overview: ${description}`,
+    `Relic Set: ${relic}. ${relicData[relic] ?? ""}`,
+    `Planar Ornament: ${planar}. ${planarData[planar] ?? ""}`,
+    `Light Cone: ${lightCone}. ${lightConeData[lightCone] ?? ""}`,
+  ];
+
+  if (notes) {
+    summaryParts.push(`Trailblazer notes: ${notes}`);
+  }
+
+  summarySection.hidden = false;
+  summaryText.textContent = summaryParts.join(" ");
+  optimalityText.textContent = `Optimality Score: ${evaluation.score}/100 — ${evaluation.label}`;
+
+  const portrait = recommendation.image ?? fallbackImage;
+  summaryImage.src = portrait.src;
+  summaryImage.alt = portrait.alt;
+  summaryCaption.textContent = evaluation.caption;
+}
+
+function evaluateBuild({ recommendation, relic, planar, lightCone }) {
+  const bestRelics = recommendation.bestRelics ?? [];
+  const bestPlanars = recommendation.bestPlanars ?? [];
+  const bestLightCones = recommendation.bestLightCones ?? [];
+
+  let score = 60;
+  const insights = [];
+
+  if (bestRelics.includes(relic)) {
+    score += 15;
+    insights.push("Relic choice aligns with top recommendations.");
+  } else {
+    insights.push("Consider relics that boost this character's core strengths.");
+  }
+
+  if (bestPlanars.includes(planar)) {
+    score += 15;
+    insights.push("Planar ornament synergy is excellent.");
+  } else {
+    insights.push("Explore planar ornaments that match their speed or break needs.");
+  }
+
+  if (bestLightCones.includes(lightCone)) {
+    score += 10;
+    insights.push("Light cone choice reinforces their combat role.");
+  } else {
+    insights.push("Swap to a path-aligned light cone for better results.");
+  }
+
+  score = Math.min(100, Math.max(40, score));
+
+  let label = "Needs Refinement";
+  if (score >= 90) {
+    label = "Outstanding";
+  } else if (score >= 80) {
+    label = "Excellent";
+  } else if (score >= 70) {
+    label = "Great";
+  } else if (score >= 60) {
+    label = "Solid";
+  }
+
+  const caption = insights.join(" ");
+
+  return { score, label, caption };
+}
