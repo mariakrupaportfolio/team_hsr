@@ -57,18 +57,26 @@ header p {
 
 main {
   width: min(1100px, 100%);
-  display: grid;
-  gap: 1.75rem;
+  margin: 0 auto;
 }
 
 .grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
+}
+
+@media (min-width: 720px) {
+  .grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
 }
 
 @media (min-width: 960px) {
   .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex-wrap: nowrap;
   }
 }
 
@@ -81,6 +89,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1 1 300px;
   box-shadow: 0 16px 36px rgba(4, 18, 45, 0.65);
   backdrop-filter: blur(10px);
   transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
