@@ -83,6 +83,8 @@ let buildSources = {
   lightCones: {},
 };
 
+let characterPortraits = {};
+
 function updateCharacterDetails(value) {
   const details = characterData[value];
   const tagElements = document.querySelectorAll(".tag");
@@ -171,6 +173,21 @@ async function loadBuildSources() {
     };
   } catch (error) {
     console.error("Unable to load build sources.", error);
+  }
+}
+
+async function loadCharacterPortraits() {
+  try {
+    const response = await fetch("data/character-portraits.json");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch character portraits: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data && typeof data === "object") {
+      characterPortraits = data;
+    }
+  } catch (error) {
+    console.error("Unable to load character portraits.", error);
   }
 }
 
@@ -302,7 +319,7 @@ async function refreshCharacterRoster() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadBuildSources();
+  await Promise.all([loadBuildSources(), loadCharacterPortraits()]);
   attachListeners();
   await refreshCharacterRoster();
 });
@@ -396,6 +413,28 @@ const fallbackImage = {
   alt: "Placeholder silhouette of a character",
 };
 
+function resolveCharacterPortrait(name) {
+  if (name) {
+    const portraitEntry = characterPortraits?.[name];
+    if (portraitEntry?.src) {
+      return {
+        src: portraitEntry.src,
+        alt: portraitEntry.alt ?? `Portrait of ${name}`,
+      };
+    }
+
+    const recommendedImage = buildRecommendations?.[name]?.image;
+    if (recommendedImage?.src) {
+      return {
+        src: recommendedImage.src,
+        alt: recommendedImage.alt ?? `Portrait of ${name}`,
+      };
+    }
+  }
+
+  return fallbackImage;
+}
+
 
 function displaySummary({ character, relic, planar, lightCone, notes }) {
   const summarySection = document.getElementById("build-summary");
@@ -450,7 +489,7 @@ function displaySummary({ character, relic, planar, lightCone, notes }) {
   summaryText.textContent = summaryParts.join(" ");
   optimalityText.textContent = `Optimality Score: ${evaluation.score}/100 — ${evaluation.label}`;
 
-  const portrait = recommendation.image ?? fallbackImage;
+  const portrait = resolveCharacterPortrait(character);
   summaryImage.src = portrait.src;
   summaryImage.alt = portrait.alt;
   summaryCaption.textContent = evaluation.caption;
