@@ -1,3 +1,15 @@
+const fallbackCharacterRoster = [
+  "Dan Heng • Imbibitor Lunae",
+  "Kafka",
+  "Seele",
+  "Bronya",
+  "Jingliu",
+  "Clara",
+  "Ruan Mei",
+  "Trailblazer (Fire)",
+  "Trailblazer (Imaginary)",
+];
+
 const characterData = {
   "Dan Heng • Imbibitor Lunae": {
     path: "Destruction",
@@ -64,21 +76,36 @@ const lightConeData = {
   "Texture of Memories": "Imaginary DMG and defensive utility for sustain-based Preservation units."
 };
 
+let buildSources = {
+  characters: {},
+  relics: {},
+  planars: {},
+  lightCones: {},
+};
+
 function updateCharacterDetails(value) {
   const details = characterData[value];
   const tagElements = document.querySelectorAll(".tag");
   tagElements.forEach((tag) => tag.classList.remove("active"));
 
-  const pathTag = Array.from(tagElements).find((tag) => tag.textContent === details?.path);
-  if (pathTag) {
-    pathTag.classList.add("active");
+  const path = details?.path;
+  if (path) {
+    const pathTag = Array.from(tagElements).find((tag) => tag.textContent === path);
+    if (pathTag) {
+      pathTag.classList.add("active");
+    }
   }
 
   const description = document.getElementById("character-description");
   if (description) {
+    if (!value) {
+      description.textContent = "";
+      return;
+    }
+
     description.textContent = details
       ? `${value} follows the Path of ${details.path}. ${details.description}`
-      : "";
+      : `${value} build guidance is coming soon.`;
   }
 }
 
@@ -129,8 +156,155 @@ function attachListeners() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+async function loadBuildSources() {
+  try {
+    const response = await fetch("data/build-sources.json");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch build sources: ${response.status}`);
+    }
+    const data = await response.json();
+    buildSources = {
+      characters: data.characters ?? {},
+      relics: data.relics ?? {},
+      planars: data.planars ?? {},
+      lightCones: data.lightCones ?? {},
+    };
+  } catch (error) {
+    console.error("Unable to load build sources.", error);
+  }
+}
+
+function extractCharacterNames(data) {
+  if (!data) {
+    return [];
+  }
+
+  const names = new Set();
+  const pushName = (name) => {
+    if (typeof name === "string") {
+      const trimmed = name.trim();
+      if (trimmed.length > 0) {
+        names.add(trimmed);
+      }
+    }
+  };
+
+  const traverse = (value, depth = 0) => {
+    if (!value || depth > 3) {
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => traverse(item, depth + 1));
+      return;
+    }
+
+    if (typeof value === "object") {
+      if ("name" in value) {
+        const entry = value.name;
+        if (typeof entry === "string") {
+          pushName(entry);
+        } else if (entry && typeof entry === "object") {
+          ["en", "EN", "english", "English", "en_us"].forEach((key) => {
+            if (entry[key]) {
+              pushName(entry[key]);
+            }
+          });
+          traverse(entry, depth + 1);
+        }
+      }
+      ["Name", "English", "title"].forEach((key) => {
+        if (value[key]) {
+          pushName(value[key]);
+        }
+      });
+
+      Object.values(value).forEach((item) => traverse(item, depth + 1));
+    }
+  };
+
+  traverse(data);
+
+  return Array.from(names).sort((a, b) => a.localeCompare(b));
+}
+
+async function fetchCharacterRoster() {
+  const rosterSources = [
+    "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_new/en/characters.json",
+    "https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/hsr/characters.json",
+  ];
+
+  for (const url of rosterSources) {
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) {
+        continue;
+      }
+      const data = await response.json();
+      const names = extractCharacterNames(data);
+      if (names.length > 0) {
+        return names;
+      }
+    } catch (error) {
+      console.warn(`Unable to load roster from ${url}`, error);
+    }
+  }
+
+  return [];
+}
+
+async function refreshCharacterRoster() {
+  const characterSelect = document.getElementById("character");
+  if (!characterSelect) {
+    return;
+  }
+
+  const fetchedRoster = await fetchCharacterRoster();
+  const combinedRoster = new Set([
+    ...fallbackCharacterRoster,
+    ...(fetchedRoster.length > 0 ? fetchedRoster : []),
+  ]);
+
+  if (combinedRoster.size === 0) {
+    return;
+  }
+
+  const previousValue = characterSelect.value;
+
+  characterSelect.innerHTML = "";
+
+  const placeholderOption = document.createElement("option");
+  placeholderOption.value = "";
+  placeholderOption.disabled = true;
+  placeholderOption.selected = true;
+  placeholderOption.textContent = "Select a character";
+  characterSelect.appendChild(placeholderOption);
+
+  Array.from(combinedRoster)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach((name) => {
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      characterSelect.appendChild(option);
+    });
+
+  if (previousValue && combinedRoster.has(previousValue)) {
+    for (const option of characterSelect.options) {
+      if (option.value === previousValue) {
+        option.selected = true;
+        break;
+      }
+    }
+  }
+
+  updateCharacterDetails(characterSelect.value);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadBuildSources();
   attachListeners();
+  await refreshCharacterRoster();
 });
 
 const buildRecommendations = {
@@ -222,15 +396,25 @@ const fallbackImage = {
   alt: "Placeholder silhouette of a character",
 };
 
+
 function displaySummary({ character, relic, planar, lightCone, notes }) {
   const summarySection = document.getElementById("build-summary");
   const summaryText = document.getElementById("summary-text");
   const optimalityText = document.getElementById("optimality-text");
   const summaryImage = document.getElementById("summary-image");
   const summaryCaption = document.getElementById("summary-caption");
+  const summarySources = document.getElementById("summary-sources");
+  const summarySourcesList = summarySources?.querySelector("ul");
 
   if (!summarySection || !summaryText || !optimalityText || !summaryImage || !summaryCaption) {
     return;
+  }
+
+  if (summarySourcesList) {
+    summarySourcesList.innerHTML = "";
+  }
+  if (summarySources) {
+    summarySources.hidden = true;
   }
 
   const hasAllSelections = character && relic && planar && lightCone;
@@ -250,7 +434,9 @@ function displaySummary({ character, relic, planar, lightCone, notes }) {
 
   const description = characterData[character]?.description ?? "";
   const summaryParts = [
-    `${character} build overview: ${description}`,
+    description
+      ? `${character} build overview: ${description}`
+      : `${character} build overview: Build insights are coming soon.`,
     `Relic Set: ${relic}. ${relicData[relic] ?? ""}`,
     `Planar Ornament: ${planar}. ${planarData[planar] ?? ""}`,
     `Light Cone: ${lightCone}. ${lightConeData[lightCone] ?? ""}`,
@@ -268,6 +454,49 @@ function displaySummary({ character, relic, planar, lightCone, notes }) {
   summaryImage.src = portrait.src;
   summaryImage.alt = portrait.alt;
   summaryCaption.textContent = evaluation.caption;
+
+  const mappedSources = [];
+  const sourceLabels = {
+    characters: "Character overview",
+    relics: "Relic set details",
+    planars: "Planar ornament details",
+    lightCones: "Light cone overview",
+  };
+  const sourceRequests = [
+    { type: "characters", key: character },
+    { type: "relics", key: relic },
+    { type: "planars", key: planar },
+    { type: "lightCones", key: lightCone },
+  ];
+
+  sourceRequests.forEach(({ type, key }) => {
+    if (!key) {
+      return;
+    }
+    const entry = buildSources?.[type]?.[key];
+    if (entry?.sourceUrl) {
+      const linkText = entry.sourceLabel ?? `${sourceLabels[type] ?? "Build reference"} – ${key}`;
+      mappedSources.push({ url: entry.sourceUrl, text: linkText });
+    }
+  });
+
+  if (summarySources && summarySourcesList) {
+    if (mappedSources.length > 0) {
+      mappedSources.forEach(({ url, text }) => {
+        const listItem = document.createElement("li");
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        anchor.textContent = text;
+        listItem.appendChild(anchor);
+        summarySourcesList.appendChild(listItem);
+      });
+      summarySources.hidden = false;
+    } else {
+      summarySources.hidden = true;
+    }
+  }
 }
 
 function evaluateBuild({ recommendation, relic, planar, lightCone }) {
