@@ -1,116 +1,111 @@
-diff --git a//dev/null b/index.html
-index 0000000000000000000000000000000000000000..b7832eb04e95911fc32b5afa15324a417c82a0ee 100644
---- a//dev/null
-+++ b/index.html
-@@ -0,0 +1,111 @@
-+<!DOCTYPE html>
-+<html lang="en">
-+  <head>
-+    <meta charset="UTF-8" />
-+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-+    <title>HSR Build Planner</title>
-+    <link rel="stylesheet" href="styles.css" />
-+    <script defer src="script.js"></script>
-+  </head>
-+  <body>
-+    <header>
-+      <h1>HSR Build Planner</h1>
-+      <p>
-+        Build your next Honkai: Star Rail team by choosing the character you
-+        want to focus on, their preferred relic setup, and the perfect light
-+        cone to match their path.
-+      </p>
-+    </header>
-+
-+    <main>
-+      <section class="grid">
-+        <article class="card">
-+          <h2>Character Selection</h2>
-+          <p>Pick the trailblazer you want to prepare a build for.</p>
-+          <label for="character">Character</label>
-+          <select id="character" name="character">
-+            <option value="" disabled selected>Select a character</option>
-+            <option>Dan Heng • Imbibitor Lunae</option>
-+            <option>Kafka</option>
-+            <option>Seele</option>
-+            <option>Bronya</option>
-+            <option>Jingliu</option>
-+            <option>Clara</option>
-+            <option>Ruan Mei</option>
-+            <option>Trailblazer (Fire)</option>
-+            <option>Trailblazer (Imaginary)</option>
-+          </select>
-+          <div class="tag-list" aria-hidden="true">
-+            <span class="tag">Hunt</span>
-+            <span class="tag">Erudition</span>
-+            <span class="tag">Harmony</span>
-+            <span class="tag">Destruction</span>
-+            <span class="tag">Preservation</span>
-+            <span class="tag">Nihility</span>
-+          </div>
-+          <div id="character-description" class="selection-display"></div>
-+        </article>
-+
-+        <article class="card">
-+          <h2>Relic Set</h2>
-+          <p>
-+            Choose the relic and planar ornament combinations that maximize the
-+            character's strengths.
-+          </p>
-+          <label for="relic-set">Relic Set</label>
-+          <select id="relic-set" name="relic-set">
-+            <option value="" disabled selected>Select a relic set</option>
-+            <option>Firesmith of Lava-Forging</option>
-+            <option>Genius of Brilliant Stars</option>
-+            <option>Eagle of Twilight Line</option>
-+            <option>Longevous Disciple</option>
-+            <option>The Ashblazing Grand Duke</option>
-+            <option>Musketeer of Wild Wheat</option>
-+          </select>
-+          <div id="relic-description" class="selection-display"></div>
-+          <label for="planar">Planar Ornament</label>
-+          <select id="planar" name="planar">
-+            <option value="" disabled selected>Select a planar ornament</option>
-+            <option>Rutilant Arena</option>
-+            <option>Space Sealing Station</option>
-+            <option>Broken Keel</option>
-+            <option>Inert Salsotto</option>
-+            <option>Sprightly Vonwacq</option>
-+          </select>
-+          <div id="planar-description" class="selection-display"></div>
-+        </article>
-+
-+        <article class="card">
-+          <h2>Light Cone</h2>
-+          <p>
-+            Pick a light cone that synchronizes with the character's path and
-+            ability kit.
-+          </p>
-+          <label for="light-cone">Light Cone</label>
-+          <select id="light-cone" name="light-cone">
-+            <option value="" disabled selected>Select a light cone</option>
-+            <option>In the Night</option>
-+            <option>Patience Is All You Need</option>
-+            <option>Moment of Victory</option>
-+            <option>Night on the Milky Way</option>
-+            <option>Before Dawn</option>
-+            <option>On the Fall of an Aeon</option>
-+            <option>Texture of Memories</option>
-+          </select>
-+          <div id="lightcone-description" class="selection-display"></div>
-+          <label for="notes">Build Notes</label>
-+          <textarea
-+            id="notes"
-+            name="notes"
-+            placeholder="Add main stats, sub-stat priorities, or team ideas..."
-+          ></textarea>
-+        </article>
-+      </section>
-+    </main>
-+
-+    <footer>
-+      Craft your perfect team rotation by pairing the right relics and light
-+      cones with each HSR character. Created for Trailblazers everywhere.
-+    </footer>
-+  </body>
-+</html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HSR Build Planner</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>HSR Build Planner</h1>
+      <p>
+        Build your next Honkai: Star Rail team by choosing the character you
+        want to focus on, their preferred relic setup, and the perfect light
+        cone to match their path.
+      </p>
+    </header>
+
+    <main>
+      <section class="grid">
+        <article class="card">
+          <h2>Character Selection</h2>
+          <p>Pick the trailblazer you want to prepare a build for.</p>
+          <label for="character">Character</label>
+          <select id="character" name="character">
+            <option value="" disabled selected>Select a character</option>
+            <option>Dan Heng • Imbibitor Lunae</option>
+            <option>Kafka</option>
+            <option>Seele</option>
+            <option>Bronya</option>
+            <option>Jingliu</option>
+            <option>Clara</option>
+            <option>Ruan Mei</option>
+            <option>Trailblazer (Fire)</option>
+            <option>Trailblazer (Imaginary)</option>
+          </select>
+          <div class="tag-list" aria-hidden="true">
+            <span class="tag">Hunt</span>
+            <span class="tag">Erudition</span>
+            <span class="tag">Harmony</span>
+            <span class="tag">Destruction</span>
+            <span class="tag">Preservation</span>
+            <span class="tag">Nihility</span>
+          </div>
+          <div id="character-description" class="selection-display"></div>
+        </article>
+
+        <article class="card">
+          <h2>Relic Set</h2>
+          <p>
+            Choose the relic and planar ornament combinations that maximize the
+            character's strengths.
+          </p>
+          <label for="relic-set">Relic Set</label>
+          <select id="relic-set" name="relic-set">
+            <option value="" disabled selected>Select a relic set</option>
+            <option>Firesmith of Lava-Forging</option>
+            <option>Genius of Brilliant Stars</option>
+            <option>Eagle of Twilight Line</option>
+            <option>Longevous Disciple</option>
+            <option>The Ashblazing Grand Duke</option>
+            <option>Musketeer of Wild Wheat</option>
+          </select>
+          <div id="relic-description" class="selection-display"></div>
+          <label for="planar">Planar Ornament</label>
+          <select id="planar" name="planar">
+            <option value="" disabled selected>Select a planar ornament</option>
+            <option>Rutilant Arena</option>
+            <option>Space Sealing Station</option>
+            <option>Broken Keel</option>
+            <option>Inert Salsotto</option>
+            <option>Sprightly Vonwacq</option>
+          </select>
+          <div id="planar-description" class="selection-display"></div>
+        </article>
+
+        <article class="card">
+          <h2>Light Cone</h2>
+          <p>
+            Pick a light cone that synchronizes with the character's path and
+            ability kit.
+          </p>
+          <label for="light-cone">Light Cone</label>
+          <select id="light-cone" name="light-cone">
+            <option value="" disabled selected>Select a light cone</option>
+            <option>In the Night</option>
+            <option>Patience Is All You Need</option>
+            <option>Moment of Victory</option>
+            <option>Night on the Milky Way</option>
+            <option>Before Dawn</option>
+            <option>On the Fall of an Aeon</option>
+            <option>Texture of Memories</option>
+          </select>
+          <div id="lightcone-description" class="selection-display"></div>
+          <label for="notes">Build Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            placeholder="Add main stats, sub-stat priorities, or team ideas..."
+          ></textarea>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      Craft your perfect team rotation by pairing the right relics and light
+      cones with each HSR character. Created for Trailblazers everywhere.
+    </footer>
+  </body>
+</html>
