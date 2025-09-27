@@ -77,7 +77,7 @@ function updateCharacterDetails(value) {
   const description = document.getElementById("character-description");
   if (description) {
     description.textContent = details
-      ? `${value} follows the Path of the ${details.path}. ${details.description}`
+      ? `${value} follows the Path of ${details.path}. ${details.description}`
       : "";
   }
 }
