@@ -66,6 +66,110 @@ main {
   gap: 1.25rem;
 }
 
+.generate-container {
+  display: flex;
+  justify-content: center;
+}
+
+.generate-button {
+  width: min(420px, 100%);
+  padding: 1.1rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-color);
+  background: linear-gradient(135deg, rgba(79, 195, 247, 0.85), rgba(125, 211, 252, 0.65));
+  border: 1px solid rgba(125, 211, 252, 0.75);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  box-shadow: 0 18px 42px rgba(4, 18, 45, 0.55);
+}
+
+.generate-button:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 22px 48px rgba(4, 18, 45, 0.7);
+  filter: brightness(1.05);
+}
+
+.generate-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.4);
+}
+
+.summary-card {
+  display: grid;
+  gap: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid rgba(79, 195, 247, 0.35);
+  border-radius: var(--border-radius);
+  padding: 1.75rem;
+  box-shadow: 0 16px 36px rgba(4, 18, 45, 0.65);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 280ms ease;
+}
+
+@media (min-width: 720px) {
+  .summary-card {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    align-items: center;
+  }
+}
+
+.summary-content h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.summary-content p {
+  margin: 0 0 0.75rem;
+  color: var(--subtext-color);
+  line-height: 1.6;
+}
+
+.summary-content p:last-child {
+  margin-bottom: 0;
+}
+
+.optimality {
+  font-weight: 600;
+  color: var(--accent-strong);
+  letter-spacing: 0.03em;
+}
+
+.summary-portrait {
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.summary-portrait img {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(79, 195, 247, 0.45);
+  box-shadow: 0 18px 36px rgba(4, 18, 45, 0.65);
+  object-fit: cover;
+  min-height: 0;
+}
+
+.summary-portrait figcaption {
+  font-size: 0.85rem;
+  color: rgba(203, 213, 255, 0.7);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (min-width: 960px) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
