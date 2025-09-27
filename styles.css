@@ -138,6 +138,43 @@ main {
   letter-spacing: 0.03em;
 }
 
+.summary-sources {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(125, 211, 252, 0.18);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.summary-sources-title {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(224, 242, 254, 0.85);
+}
+
+.summary-sources-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--subtext-color);
+}
+
+.summary-sources-list a {
+  color: var(--accent-strong);
+  text-decoration: none;
+  transition: color var(--transition), text-decoration-color var(--transition);
+}
+
+.summary-sources-list a:hover,
+.summary-sources-list a:focus {
+  color: #e0f2fe;
+  text-decoration: underline;
+}
+
 .summary-portrait {
   margin: 0;
   display: grid;

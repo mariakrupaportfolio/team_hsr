@@ -64,6 +64,13 @@ const lightConeData = {
   "Texture of Memories": "Imaginary DMG and defensive utility for sustain-based Preservation units."
 };
 
+let buildSources = {
+  characters: {},
+  relics: {},
+  planars: {},
+  lightCones: {},
+};
+
 function updateCharacterDetails(value) {
   const details = characterData[value];
   const tagElements = document.querySelectorAll(".tag");
@@ -129,7 +136,26 @@ function attachListeners() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+async function loadBuildSources() {
+  try {
+    const response = await fetch("data/build-sources.json");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch build sources: ${response.status}`);
+    }
+    const data = await response.json();
+    buildSources = {
+      characters: data.characters ?? {},
+      relics: data.relics ?? {},
+      planars: data.planars ?? {},
+      lightCones: data.lightCones ?? {},
+    };
+  } catch (error) {
+    console.error("Unable to load build sources.", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadBuildSources();
   attachListeners();
 });
 
@@ -222,15 +248,25 @@ const fallbackImage = {
   alt: "Placeholder silhouette of a character",
 };
 
+
 function displaySummary({ character, relic, planar, lightCone, notes }) {
   const summarySection = document.getElementById("build-summary");
   const summaryText = document.getElementById("summary-text");
   const optimalityText = document.getElementById("optimality-text");
   const summaryImage = document.getElementById("summary-image");
   const summaryCaption = document.getElementById("summary-caption");
+  const summarySources = document.getElementById("summary-sources");
+  const summarySourcesList = summarySources?.querySelector("ul");
 
   if (!summarySection || !summaryText || !optimalityText || !summaryImage || !summaryCaption) {
     return;
+  }
+
+  if (summarySourcesList) {
+    summarySourcesList.innerHTML = "";
+  }
+  if (summarySources) {
+    summarySources.hidden = true;
   }
 
   const hasAllSelections = character && relic && planar && lightCone;
@@ -268,6 +304,49 @@ function displaySummary({ character, relic, planar, lightCone, notes }) {
   summaryImage.src = portrait.src;
   summaryImage.alt = portrait.alt;
   summaryCaption.textContent = evaluation.caption;
+
+  const mappedSources = [];
+  const sourceLabels = {
+    characters: "Character overview",
+    relics: "Relic set details",
+    planars: "Planar ornament details",
+    lightCones: "Light cone overview",
+  };
+  const sourceRequests = [
+    { type: "characters", key: character },
+    { type: "relics", key: relic },
+    { type: "planars", key: planar },
+    { type: "lightCones", key: lightCone },
+  ];
+
+  sourceRequests.forEach(({ type, key }) => {
+    if (!key) {
+      return;
+    }
+    const entry = buildSources?.[type]?.[key];
+    if (entry?.sourceUrl) {
+      const linkText = entry.sourceLabel ?? `${sourceLabels[type] ?? "Build reference"} – ${key}`;
+      mappedSources.push({ url: entry.sourceUrl, text: linkText });
+    }
+  });
+
+  if (summarySources && summarySourcesList) {
+    if (mappedSources.length > 0) {
+      mappedSources.forEach(({ url, text }) => {
+        const listItem = document.createElement("li");
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        anchor.textContent = text;
+        listItem.appendChild(anchor);
+        summarySourcesList.appendChild(listItem);
+      });
+      summarySources.hidden = false;
+    } else {
+      summarySources.hidden = true;
+    }
+  }
 }
 
 function evaluateBuild({ recommendation, relic, planar, lightCone }) {
